@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+  
+  {% block body %}
+
+<div class="container mt-5">
+    <div class="row">     
+      <!---Profil card- baslangıç-->
+        <div class="post-card col-xl-12 p-4 d-flex justify-content-center">
+                    <div class="row mb-4 py-4">
+                        <div class="profile-img col-xl-4">
+                    <div class="text-center p-2">Profil Fotoğrafı</div>       
+                    <form  method="POST" enctype="multipart/form-data">
+                      {% csrf_token %}  
+                      <div class="card-body text-center"> 
+                        <img class="img-account-profile rounded-circle mb-2" style="width: 120px; height: 120px;" 
+                        src="{% if user_profile.profil_img %} {{ user_profile.profil_img.url }} {% endif %}" alt="profil">
+                        <div class="small font-italic text-muted mb-4">Yükleyeceğiniz profil fotoğrafı 5 MB'dan fazla olmamalıdır.</div>
+                        <input type="file" name="image" class="form-control-file" id="id_image">
+                        <button name="image"  class="follow-btn mb-2 mt-2" role="button" type="submit">Kaydet</button>
+                  </div>
+                </form>
+                </div>
+                <div class="col-xl-8">
+                        <div class="profile-body mb-4 d-flex" style="justify-content: end;">
+                            <form method="POST">
+                                <!-- Form  (username)-->
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputUsername">Kullanıcı adınız</label>
+                                    <input name="username" class="form-control" id="inputUsername" type="text" placeholder="Enter your username" value="{{request.user.username}}">
+                                </div>
+                              
+                                <div class="row gx-3 mb-3">
+                                    <!-- Form  (first name)-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputFirstName">İsim</label>
+                                        <input name="first_name"  class="form-control" id="inputFirstName" type="text" placeholder="Enter your first name" value="{{request.user.first_name}}">
+                                    </div>
+                                    <!-- Form  (last name)-->
+                                    <div class="col-md-6">
+                                        <label class="small mb-1" for="inputLastName">Soyad</label>
+                                        <input name="last_name"  class="form-control" id="inputLastName" type="text" placeholder="Enter your last name" value="{{request.user.last_name}}">
+                                    </div>
+                                </div>
+                               
+                                <div class="row gx-3 mb-3">
+                                </div>
+                                <!-- Form  (email)-->
+                                <div class="mb-3">
+                                    <label class="small mb-1" for="inputEmailAddress">E-mail</label>
+                                    <input name="email"  class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="{{request.user.email}}">
+                                </div>
+                                <!-- Değişiklikleri kaydet butonu-->
+                                <button name="profil" class="follow-btn mb-2 mt-2" role="button" type="submit">Değişiklikleri Kaydet</button>
+                            </form>
+                            </div>
+                          </div>    
+                     
+                  </div>
+                </div>
+            </div>                
+          </div>
+</div> 
+{% endblock body %}

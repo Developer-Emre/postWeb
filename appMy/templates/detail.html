@@ -1,0 +1,184 @@
+{% extends 'base.html' %} {% load static %} {% block body %}
+<div class="container mt-5">
+  <div class="row">
+    <!---Post Card başlangıç-->
+    <div class="post-card col-lg-8 p-4">
+      <div class="row mb-4 py-4">
+        <div class="profile-img col-4">
+          <img
+            src="{{post.user.profil.profil_img.url}}"
+            alt="Image"
+            class="img-profile mr-3 mt-1 w-10 h-10"
+            style="width: 60px; height: 60px"
+          />
+          <div class="border" style="height: 400px; width: 4px"></div>
+        </div>
+        <div class="col-8">
+          <div class="media-body">
+            <h6 class="profile-text">
+              {{post.user.username}}<small> - <i>20/03/2023</i></small>
+            </h6>
+            <p class="mt-4">{{post.post_text|linebreaksbr}}</p>
+            <img class="post-img w-100" src="{{ post.post_img.url }}" alt="" />
+          </div>
+          <div class="lower-card d-flex py-2">
+            <div class="like-card">
+              <i class="fa-sharp fa-regular fa-heart"></i>
+              <a class="text-decoration-none" href="">Beğen!</a>
+            </div>
+            <div class="share-card">
+              <i class="fa-solid fa-share-from-square"></i>
+              <a class="text-decoration-none" href="">Paylaş!</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <!-- Yorum-satırı -->
+      <div class="comment m-4">
+        <h5>Yorumlar</h5>
+        <div class="comment-card d-flex">
+          {% if request.user.is_authenticated %}
+          <img
+            src="{{user_profile_pic}}"
+            alt="Image"
+            class="img-profile mr-3 mt-1 w-10 h-10"
+            style="width: 60px; height: 60px"
+          />
+          <form class="m-4" method="POST">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                class="form-control"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+                name="comment"
+              />
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2"
+                  ><button
+                    name="comment-submit"
+                    class="follow-btn mb-2"
+                    role="submit"
+                  >
+                    Yorum Yap
+                  </button></span
+                >
+              </div>
+            </div>
+          </form>
+          {% endif %}
+        </div>
+        {% for i in comments %}
+        <div class="mb-5 comments">
+          <div class="d-flex mb-4">
+            <img
+              src="{{i.user.profil.profil_img.url}}"
+              alt="Image"
+              class="img-profile mt-4"
+              style="width: 60px; height: 60px"
+            />
+            <div class="ps-3">
+              <h6>
+                <small><i>{{i.user.first_name}}-{{i.user.last_name}}</i></small>
+              </h6>
+              <p>{{i.comment}}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <!---Kategori Başlangıç-->
+    </div>
+    <div class="categories col-xl-4 p-4">
+      <h4 class="text-center">Bu gün Trendlerde neler var</h4>
+      <hr />
+      <div class="trend-card-background">
+        <div class="trend-card">
+          <ul class="list-style-type: none;">
+            <a class="trend-post text-decoration-none" href="">
+              <li>
+                <h6 class="py-2">Python</h6>
+                <p>#Flasköğreniyorum</p>
+              </li>
+            </a>
+          </ul>
+        </div>
+
+        <div class="trend-card mt-2">
+          <ul class="list-style-type: none;">
+            <a class="trend-post text-decoration-none" href="">
+              <li>
+                <h6 class="py-2">django</h6>
+                <p>#harikaFramework</p>
+              </li>
+            </a>
+          </ul>
+        </div>
+        <div class="trend-card mt-2">
+          <ul class="list-style-type: none;">
+            <a class="trend-post text-decoration-none" href="">
+              <li>
+                <h6 class="py-2">Python</h6>
+                <p>#HarikaFramework</p>
+              </li>
+            </a>
+          </ul>
+        </div>
+      </div>
+      <!---Takip Et Kategorisi-->
+      <h4 class="text-center mt-5">Takip Edebileceğin Kullanıcılar</h4>
+      <hr />
+      <div class="container">
+        <div class="row">
+          {% for user in users %} {% if user != request.user and not user.is_superuser %}
+
+          <div class="col-sm-12 col-xl-6 mb-4">
+            <div class="follow" style="width: 18rem">
+              <img
+                src="{{user.profil.profil_img.url}}"
+                alt="Image"
+                class="follow-img-profile mx-auto d-block mt-3 mb-2"
+                style="width: 60px; height: 60px"
+              />
+              <div class="follow-body text-center">
+                <h6 class="text-center card-title mb-2">
+                  {{user.first_name}} {{user.last_name}}
+                </h6>
+                {% if user in request.user.profil.followers.all %}
+                <form method="POST">
+                  {% csrf_token %}
+                  <button
+                    class="follow-btn mb-2"
+                    type="submit"
+                    name="unfollow"
+                    value="{{ user.username }}"
+                  >
+                    Takibi Bırak
+                  </button>
+                </form>
+                {% else %}
+                <form method="POST">
+                  {% csrf_token %}
+                  <button
+                    class="follow-btn mb-2"
+                    type="submit"
+                    name="follow"
+                    value="{{ user.username }}"
+                  >
+                    Takip Et
+                  </button>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--POST Son-->
+  {% endblock body %}
+</div>

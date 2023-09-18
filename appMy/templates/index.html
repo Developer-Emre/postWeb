@@ -1,0 +1,155 @@
+{% extends 'base.html' %} {% load static %} {% block body %}
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="post-card col-lg-8 p-4">
+      <div class="media mb-4 py-2">
+        <!---Post Card başlangıç-->
+        {% for i in post_random %}
+        <div class="row mb-4 py-4">
+          <div class="profile-img col-4">
+            <img
+              src="{{i.user.profil.profil_img.url}}"
+              alt="Image"
+              class="img-profile mr-3 mt-1 w-10 h-10"
+              style="width: 60px; height: 60px"
+            />
+            <div class="border" style="height: 400px; width: 4px"></div>
+          </div>
+          <div class="col-8">
+            <div class="media-body">
+              <h6 class="profile-text">
+                {{i.user}}<small> - <i>20/03/2023</i></small>
+              </h6>
+              <a
+                class="post-text-img text-decoration-none"
+                href="detail/{{ i.id }}"
+              >
+                <p class="mt-4">{{i.post_text|linebreaksbr}}</p>
+                {% if i.post_img %}
+                <img class="post-img w-100" src="{{i.post_img.url}}" alt="" />
+                {% endif %}
+              </a>
+            </div>
+            <div class="lower-card d-flex py-2">
+              <div class="comment-card">
+                <i class="fa-regular fa-comment"></i>
+                <a class="text-decoration-none" href="detail/{{ i.id }}"
+                  >Yorum Yap</a
+                >
+              </div>
+              <form action="" method="POST">
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  style="border: none; background-color: #fff"
+                  name="post_id"
+                  value="{{ post.id }}"
+                >
+                  Beğen!
+                </button>
+              </form>
+              <div class="share-card">
+                <i class="fa-solid fa-share-from-square"></i>
+                <a class="text-decoration-none" href="">Paylaş!</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr />
+        {% endfor %}
+      </div>
+    </div>
+
+    <!---Kategori Başlangıç-->
+    <div class="categories col-xl-4 p-4">
+      <h4 class="text-center">Bu gün Trendlerde neler var</h4>
+      <hr />
+      <div class="trend-card-background">
+        <div class="trend-card">
+          <ul class="list-style-type: none;">
+            <a class="trend-post text-decoration-none" href="">
+              <li>
+                <h6 class="py-2">Python</h6>
+                <p>#Flasköğreniyorum</p>
+              </li>
+            </a>
+          </ul>
+        </div>
+
+        <div class="trend-card mt-2">
+          <ul class="list-style-type: none;">
+            <a class="trend-post text-decoration-none" href="">
+              <li>
+                <h6 class="py-2">django</h6>
+                <p>#harikaFramework</p>
+              </li>
+            </a>
+          </ul>
+        </div>
+        <div class="trend-card mt-2">
+          <ul class="list-style-type: none;">
+            <a class="trend-post text-decoration-none" href="">
+              <li>
+                <h6 class="py-2">ChatGPT-4</h6>
+                <p>#Yenigüncelleme</p>
+              </li>
+            </a>
+          </ul>
+        </div>
+      </div>
+      <!---Takip Et Kategorisi-->
+      <h4 class="text-center mt-5">Takip Edebileceğin Kullanıcılar</h4>
+      <hr />
+      <div class="container">
+        <div class="row">
+          {% for user in users %} {% if user != request.user and not user.is_superuser %}
+
+          <div class="col-sm-12 col-xl-6 mb-4">
+            <div class="follow" style="width: 18rem">
+              <img
+                src="{{user.profil.profil_img.url}}"
+                alt="Image"
+                class="follow-img-profile mx-auto d-block mt-3 mb-2"
+                style="width: 60px; height: 60px"
+              />
+              <div class="follow-body text-center">
+                <h6 class="text-center card-title mb-2">
+                  {{user.first_name}} {{user.last_name}}
+                </h6>
+                {% if user in request.user.profil.followers.all %}
+                <form method="POST">
+                  {% csrf_token %}
+                  <button
+                    class="follow-btn mb-2"
+                    type="submit"
+                    name="unfollow"
+                    value="{{ user.username }}"
+                  >
+                    Takibi Bırak
+                  </button>
+                </form>
+                {% else %}
+                <form method="POST">
+                  {% csrf_token %}
+                  <button
+                    class="follow-btn mb-2"
+                    type="submit"
+                    name="follow"
+                    value="{{ user.username }}"
+                  >
+                    Takip Et
+                  </button>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endif %} {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--POST Son-->
+{% endblock body %}
